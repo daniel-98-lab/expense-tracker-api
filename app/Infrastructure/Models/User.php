@@ -6,8 +6,9 @@ namespace App\Infrastructure\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -42,6 +43,26 @@ class User extends Authenticatable
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get the identifier that will be stored in the JWT token.
+     *
+     * @return mixed The primary key of the user.
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return an array of custom claims to be added to the JWT token.
+     *
+     * @return array An empty array since no custom claims are defined.
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     /**
