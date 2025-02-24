@@ -12,7 +12,7 @@ class Expense extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'amount', 'date', 'description', 'title',
+        'amount', 'date', 'description', 'title', 'user_id', 'category_id'
     ];
 
     /**
