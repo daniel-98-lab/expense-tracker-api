@@ -13,7 +13,6 @@ class DeleteCategory
      * 
      * @param int id
      * @return bool
-     * @throws \Exception if category is not found
      */
     public function execute(int $id): bool
     {

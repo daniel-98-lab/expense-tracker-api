@@ -33,7 +33,7 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->get()
             ->map(fn($category) => new DomainCategory($category->id, $category->name))
             ->toArray();
-    }    
+    }
 
     /**
      * Retrieves a category by its ID.

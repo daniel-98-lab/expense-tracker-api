@@ -10,7 +10,7 @@ class Category
         public ?int $id,
         public string $name
     ) {
-      Validator::notEmpty($name, "name");
+      Validator::notEmpty($name, "Name");
     }
 
     /**
