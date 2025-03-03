@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\Utils\Validator;
-use DateTime;
+use Carbon\Carbon;
 
 class Expense
 {
@@ -14,7 +14,7 @@ class Expense
         public string $title,
         public ?string $description,
         public float $amount,
-        public DateTime $date
+        public Carbon $date
     ) {
         Validator::notNull($userId, "User ID");
         Validator::notNull($categoryId, "Category ID");
@@ -31,7 +31,7 @@ class Expense
         string $title, 
         ?string $description, 
         float $amount, 
-        DateTime $date
+        Carbon $date
     ): self {
         return new self(null, $userId, $categoryId, $title, $description, $amount, $date);
     }

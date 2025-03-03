@@ -17,7 +17,7 @@ class UpdateExpense
      * @param ExpenseDTO expenseDTO
      * @return ?Expense
      */
-    public function execute(int $id, ExpenseDTO $expenseDTO): Expense
+    public function execute(int $id, ExpenseDTO $expenseDTO): ?Expense
     {
         $expense = Expense::create(
             $expenseDTO->userId,

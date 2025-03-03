@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ExpenseRepository implements ExpenseRepositoryInterface
 {
-    /**
+    /** 
      * Delete an expense if it belongs to the authenticated user.
      *
      * @param int $id The expense ID.
@@ -44,19 +44,23 @@ class ExpenseRepository implements ExpenseRepositoryInterface
             $query->where('category_id', $categoryId);
 
         if ($search !== null)
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%' . $search . '%');
 
-        $expenses = $query->orderBy('name')->get();
+        $expenses = $query->orderBy('title')->get(); // Get collection of results
 
-        return $expenses->map(fn($expense) => new DomainExpense(
-            $expense->id,
-            $expense->user_id,
-            $expense->category_id,
-            $expense->title,
-            $expense->description,
-            $expense->amount,
-            $expense->date
-        ))->toArray();
+        $expenses = $expenses->map(function ($expenseData) {
+            return new DomainExpense(
+                $expenseData['id'],
+                $expenseData['user_id'],
+                $expenseData['category_id'],
+                $expenseData['title'],
+                $expenseData['description'],
+                $expenseData['amount'],
+                $expenseData['date']
+            );
+        });
+        
+        return $expenses->toArray();
     }
 
     /**
@@ -95,7 +99,6 @@ class ExpenseRepository implements ExpenseRepositoryInterface
     public function create(DomainExpense $expense): DomainExpense
     {
         $eloquentExpense = new EloquentExpense();
-        $eloquentExpense->id = $expense->id;
         $eloquentExpense->user_id = $expense->userId;
         $eloquentExpense->category_id = $expense->categoryId;
         $eloquentExpense->title = $expense->title;
@@ -127,11 +130,10 @@ class ExpenseRepository implements ExpenseRepositoryInterface
         $eloquentExpense = EloquentExpense::where('user_id', $expense->userId)
             ->where('id', $id)
             ->first();
-
+        
         if (!$eloquentExpense)
             return null;
 
-        $eloquentExpense->id = $expense->id;
         $eloquentExpense->user_id = $expense->userId;
         $eloquentExpense->category_id = $expense->categoryId;
         $eloquentExpense->title = $expense->title;

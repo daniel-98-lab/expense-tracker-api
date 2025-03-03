@@ -25,6 +25,7 @@ class Expense extends Model
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'date'       => 'date:Y-m-d',
         ];
     }
 

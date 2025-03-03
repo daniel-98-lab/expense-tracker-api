@@ -3,7 +3,7 @@
 namespace App\Application\DTOs;
 
 use App\Domain\Entities\Expense;
-use DateTime;
+use Carbon\Carbon;
 
 class ExpenseDTO
 {
@@ -14,8 +14,10 @@ class ExpenseDTO
         public string $title,
         public ?string $description,
         public float $amount,
-        public DateTime $date
-    ) {}
+        public Carbon $date
+    ) {
+        $this->date = $date->startOfDay();
+    }
 
     /**
      * Creates a ExpenseDTO from a request array
@@ -29,7 +31,7 @@ class ExpenseDTO
             $data['title'],
             $data['description'] ?? null,
             $data['amount'],
-            new DateTime($data['date'])
+            new Carbon($data['date'])
         );
     }
 
@@ -45,7 +47,7 @@ class ExpenseDTO
             "title"       => $expense->title,
             "description" => $expense->description,
             "amount"      => $expense->amount,
-            "date"        => $expense->date->format(DateTime::ATOM)
+            "date"        => $expense->date->format('Y-m-d')
         ];    
     }
 }

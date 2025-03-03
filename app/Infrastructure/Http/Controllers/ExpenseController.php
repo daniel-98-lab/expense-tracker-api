@@ -33,7 +33,7 @@ class ExpenseController
      * @param string $id
      * @return JsonResponse
      */
-    public function destroy(string $id): JsonResponse
+    public function delete(string $id): JsonResponse
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
@@ -63,23 +63,41 @@ class ExpenseController
         if (!$user)
             return ApiResponse::error('Unauthorized', "No valid user found.", 401);
 
-        $categoryId = $request->query('category_id');
+        $categoryId = $request->query('categoryId');
         $searchTerm = $request->query('search');
 
-        $expenses = $this->getExpensesByFilters->execute($user->id, $categoryId, $searchTerm);
+        $expenses = $this->getExpensesByFilters->execute($user->id, $categoryId, $searchTerm); // es un array
 
-        return ApiResponse::successCollection(
-            'expenses',
-            array_map(fn($c) => [
-                'id' => $c->id,
-                'user_id' => $c->user_id,
-                'category_id' => $c->category_id,
-                'title' => $c->title,
-                'description' => $c->description,
-                'amount' => $c->amount,
-                'date' => $c->date
-            ], $expenses)
-        );
+        $expensesFormatted = array_map(function($expense)
+        {
+            $expenseDTO = ExpenseDTO::toResponse($expense);
+
+            return [
+                'id' => (string) $expenseDTO['id'],
+                'attributes' => [
+                    'title'       => $expenseDTO['title'],
+                    'description' => $expenseDTO['description'],
+                    'amount'      => (string) $expenseDTO['amount'],
+                    'date'        => $expenseDTO['date']
+                ],
+                'relationships' => [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => (string) $expenseDTO['user_id'],
+                        ]
+                    ],
+                    'category' => [
+                        'data' => [
+                            'type' => 'categories',
+                            'id'   => (string) $expenseDTO['category_id'],
+                        ]
+                    ]
+                ]
+            ];
+        }, $expenses);
+        
+        return ApiResponse::successCollection('expenses', $expensesFormatted);
     }
 
     /**
@@ -96,20 +114,34 @@ class ExpenseController
             return ApiResponse::error('Unauthorized', "No valid user found.", 401);
 
         $expense = $this->getExpense->execute($id);
-
+        
         if(!$expense)
             return ApiResponse::error('Expense Not Found', "The expense with ID {$id} was not found.", 404);
+        
+        $expenseResponseDTO = ExpenseDTO::toResponse($expense);
 
         return ApiResponse::successResource(
             'expenses',
-            $expense->id,
+            (string) $expenseResponseDTO['id'],
             [
-                'user_id' => $expense->userId,
-                'category_id' => $expense->categoryId,
-                'title' => $expense->title,
-                'description' => $expense->description,
-                'amount' => $expense->amount,
-                'date' => $expense->date
+                'title' => $expenseResponseDTO['title'],
+                'description' => $expenseResponseDTO['description'],
+                'amount' => $expenseResponseDTO['amount'],
+                'date' => $expenseResponseDTO['date']
+            ],
+            [
+                'user' => [
+                    'data' => [
+                        'type' => 'users',
+                        'id'   => (string) $expenseResponseDTO['user_id'],
+                    ]
+                ],
+                'category' => [
+                    'data' => [
+                        'type' => 'categories',
+                        'id'   => (string) $expenseResponseDTO['category_id'],
+                    ]
+                ]
             ]
         );
     }
@@ -125,29 +157,43 @@ class ExpenseController
             if (!$user)
                 return ApiResponse::error('Unauthorized', "No valid user found.", 401);    
 
-                $expenseDTO = new ExpenseDTO(
-                    null,
-                    (int) $request['data.attributes.user_id'],
-                    (int) $request['data.attributes.category_id'],
-                    (string) $request['data.attributes.title'],
-                    isset($request['data.attributes.description']) ? (string) $request['data.attributes.description'] : null,
-                    (float) $request['data.attributes.amount'],
-                    Carbon::parse($request['data.attributes.date'])
-                );
+            $expenseDTO = new ExpenseDTO(
+                null,
+                (int) $request['data.relationships.user.data.id'],
+                (int) $request['data.relationships.category.data.id'],
+                (string) $request['data.attributes.title'],
+                isset($request['data.attributes.description']) ? (string) $request['data.attributes.description'] : null,
+                (float) $request['data.attributes.amount'],
+                Carbon::parse($request['data.attributes.date'])
+            );
 
             $expense = $this->createExpense->execute($expenseDTO);
+            $expenseResponseDTO = ExpenseDTO::toResponse($expense);
 
             return ApiResponse::successResource(
                 'expenses',
-                $expense->id,
+                $expenseResponseDTO['id'],
                 [
-                    'user_id' => $expense->userId,
-                    'category_id' => $expense->categoryId,
-                    'title' => $expense->title,
-                    'description' => $expense->description,
-                    'amount' => $expense->amount,
-                    'date' => $expense->date
-                ]
+                    'title' => $expenseResponseDTO['title'],
+                    'description' => $expenseResponseDTO['description'],
+                    'amount' => $expenseResponseDTO['amount'],
+                    'date' => $expenseResponseDTO['date'],
+                ],
+                [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => (string) $expenseResponseDTO['user_id'],
+                        ]
+                    ],
+                    'category' => [
+                        'data' => [
+                            'type' => 'categories',
+                            'id'   => (string) $expenseResponseDTO['category_id'],
+                        ]
+                    ]
+                ],
+                201,
             );
 
         } catch (\Exception $e) {
@@ -166,32 +212,46 @@ class ExpenseController
             if (!$user)
                 throw new \Exception("Unauthorized: No valid user found.");
 
-                $expenseDTO = new ExpenseDTO(
-                    null,
-                    (int) $request['data.attributes.user_id'],
-                    (int) $request['data.attributes.category_id'],
-                    (string) $request['data.attributes.title'],
-                    isset($request['data.attributes.description']) ? (string) $request['data.attributes.description'] : null,
-                    (float) $request['data.attributes.amount'],
-                    Carbon::parse($request['data.attributes.date'])
-                );
+            $expenseDTO = new ExpenseDTO(
+                (int) $id,
+                (int) $request['data.relationships.user.data.id'],
+                (int) $request['data.relationships.category.data.id'],
+                (string) $request['data.attributes.title'],
+                isset($request['data.attributes.description']) ? (string) $request['data.attributes.description'] : null,
+                (float) $request['data.attributes.amount'],
+                Carbon::parse($request['data.attributes.date'])
+            );
 
-                $expense = $this->updateExpense->execute($id, $expenseDTO);
+            $expense = $this->updateExpense->execute($id, $expenseDTO);
 
             if (!$expense) {
                 return ApiResponse::error('Expense Not Found', "Expense with ID {$id} not found.", 404);
             }
 
+            $expenseResponseDTO = ExpenseDTO::toResponse($expense);
+
             return ApiResponse::successResource(
                 'expenses',
-                $expense->id,
+                $expenseResponseDTO['id'],
                 [
-                    'user_id' => $expense->userId,
-                    'category_id' => $expense->categoryId,
-                    'title' => $expense->title,
-                    'description' => $expense->description,
-                    'amount' => $expense->amount,
-                    'date' => $expense->date
+                    'title' => $expenseResponseDTO['title'],
+                    'description' => $expenseResponseDTO['description'],
+                    'amount' => $expenseResponseDTO['amount'],
+                    'date' => $expenseResponseDTO['date'],
+                ],
+                [
+                    'user' => [
+                        'data' => [
+                            'type' => 'users',
+                            'id'   => (string) $expenseResponseDTO['user_id'],
+                        ]
+                    ],
+                    'category' => [
+                        'data' => [
+                            'type' => 'categories',
+                            'id'   => (string) $expenseResponseDTO['category_id'],
+                        ]
+                    ]
                 ]
             );
         } catch (\Exception $e) {

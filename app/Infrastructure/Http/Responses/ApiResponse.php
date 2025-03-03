@@ -24,18 +24,25 @@ class ApiResponse
      * @param string $type
      * @param int|string $id
      * @param array $attributes
+     * @param array|null $relationships
      * @param int $statusCode
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function successResource(string $type, int|string $id, array $attributes, int $statusCode = 200)
+    public static function successResource(string $type, int|string $id, array $attributes, ?array $relationships = null, int $statusCode = 200)
     {
-        return response()->json([
+        $response = [
             'data' => [
                 'type'       => $type,
                 'id'         => (string) $id,
                 'attributes' => $attributes,
             ]
-        ], $statusCode);
+        ];
+
+        if (!empty($relationships)) {
+            $response['data']['relationships'] = $relationships;
+        }
+
+        return response()->json($response, $statusCode);
     }
 
     /**
@@ -50,10 +57,9 @@ class ApiResponse
     {
         return response()->json([
             'data' => array_map(fn($item) => [
-                'type'       => $type,
-                'id'         => (string) $item['id'],
-                'attributes' => $item,
-            ], $items)
+                'type' => $type,
+                'id'   => (string) $item['id'],
+            ] + $item, $items)
         ], $statusCode);
     }
 

@@ -31,7 +31,6 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getAll(): array {
         return EloquentCategory::orderBy('name')
             ->get()
-            ->map(fn($category) => new DomainCategory($category->id, $category->name))
             ->toArray();
     }
 

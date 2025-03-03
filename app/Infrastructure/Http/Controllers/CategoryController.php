@@ -54,7 +54,14 @@ class CategoryController
 
         return ApiResponse::successCollection(
             'categories',
-            array_map(fn($c) => ['id' => $c->id, 'name' => $c->name], $categories)
+            array_map(fn($c) => 
+            [
+                'id' => $c['id'], 
+                'attributes' => [
+                    'name'  => $c['name'],
+                ],
+            ], 
+            $categories)
         );
     }
 
@@ -91,6 +98,7 @@ class CategoryController
                 'categories',
                 (string) $category->id,
                 ['name' => $category->name],
+                [],
                 201
             );
         } catch (\Exception $e) {

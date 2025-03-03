@@ -11,7 +11,7 @@ class ExpenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,10 +24,10 @@ class ExpenseRequest extends FormRequest
         return [
             'data.attributes.title' => ['required', 'string', 'max:255'],
             'data.attributes.description' => ['nullable', 'string', 'max:1000'],
-            'data.attributes.amount' => ['required', 'numeric', 'min:0'],
+            'data.attributes.amount' => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
             'data.attributes.date' => ['required', 'date'],
-            'data.attributes.user_id' => ['required', 'integer', 'exists:users,id'],
-            'data.attributes.category_id' => ['required', 'integer', 'exists:categories,id'],
+            'data.relationships.user.data.id' => ['required', 'integer', 'exists:users,id'],
+            'data.relationships.category.data.id' => ['required', 'integer', 'exists:categories,id'],
         ];
     }
 }
