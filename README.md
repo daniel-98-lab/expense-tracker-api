@@ -64,6 +64,8 @@ Challenge from [expense-tracker-api](https://roadmap.sh/projects/expense-tracker
 
 ## API Examples
 
+Reminder! If your API call response is: 'Unauthenticated', maybe your token has expired. You need to log in again and update the token.
+
 All API request examples are available in [this file](./docs/expense-tracker-api.postman_collection.json). If you have the Postman app, simply import this file to access all API calls.
 
 ---

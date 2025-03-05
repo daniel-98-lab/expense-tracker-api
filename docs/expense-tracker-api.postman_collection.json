@@ -270,7 +270,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd3d3LmV4cGVuc2UtdHJhY2tlci1hcGkubG9jYWwuY29tL2FwaS9sb2dpbiIsImlhdCI6MTczOTgwNTUzMCwiZXhwIjoxNzM5ODEyNzMwLCJuYmYiOjE3Mzk4MDU1MzAsImp0aSI6IkhoVHk2dVZyM3BlWWVNWEUiLCJzdWIiOiIxIiwicHJ2IjoiMTQ1YzZhZDJiNGQwNTRmZjYyMjE5NGM5OWVmYjFkMjViNzY3MjQ2ZiJ9.4JAz-f82nAw0DD0oRLA_iU3Fy-m4w_rKZ_mtQmijFKM",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd3d3LmV4cGVuc2UtdHJhY2tlci1hcGkucHJvLmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3NDExNjU1MTQsImV4cCI6MTc0MTE3MjcxNCwibmJmIjoxNzQxMTY1NTE0LCJqdGkiOiJtNGJRR1pUSk5qSU1CUzdvIiwic3ViIjoiMSIsInBydiI6IjE0NWM2YWQyYjRkMDU0ZmY2MjIxOTRjOTllZmIxZDI1Yjc2NzI0NmYifQ.7iwDrRAjxVxXjiu6zWu45oMXan19M-nFKblcObYmRj8",
 									"type": "string"
 								}
 							]
@@ -533,7 +533,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd3d3LmV4cGVuc2UtdHJhY2tlci1hcGkubG9jYWwuY29tL2FwaS9sb2dpbiIsImlhdCI6MTc0MTE2NDQ5MCwiZXhwIjoxNzQxMTcxNjkwLCJuYmYiOjE3NDExNjQ0OTAsImp0aSI6IjhlVld1OHVuSlZ4MXZRdWciLCJzdWIiOiIxIiwicHJ2IjoiMTQ1YzZhZDJiNGQwNTRmZjYyMjE5NGM5OWVmYjFkMjViNzY3MjQ2ZiJ9.C6RxyeMV0vdlP8EGuWSqgDAVBlL31xC8HcT2Lsbl43U",
+				"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vd3d3LmV4cGVuc2UtdHJhY2tlci1hcGkucHJvLmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3NDExNjU1MTQsImV4cCI6MTc0MTE3MjcxNCwibmJmIjoxNzQxMTY1NTE0LCJqdGkiOiJtNGJRR1pUSk5qSU1CUzdvIiwic3ViIjoiMSIsInBydiI6IjE0NWM2YWQyYjRkMDU0ZmY2MjIxOTRjOTllZmIxZDI1Yjc2NzI0NmYifQ.7iwDrRAjxVxXjiu6zWu45oMXan19M-nFKblcObYmRj8",
 				"type": "string"
 			}
 		]
@@ -561,7 +561,7 @@
 	"variable": [
 		{
 			"key": "URL",
-			"value": "http://www.expense-tracker-api.local.com",
+			"value": "http://www.expense-tracker-api.pro.com",
 			"type": "default"
 		}
 	]
