@@ -68,8 +68,8 @@ JWT_TTL=120;
 VITE_APP_NAME="${APP_NAME}"
 
 ## USER SEEDER ##
-USER_NAME="###########"
-USER_EMAIL="###########"
-USER_PASSWORD="###########"
+USER_NAME="name"
+USER_EMAIL="example@example.com"
+USER_PASSWORD="12345678"
 
 JWT_SECRET=
